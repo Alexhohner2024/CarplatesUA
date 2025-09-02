@@ -1,0 +1,17 @@
+{
+  "name": "carplates-ua",
+  "version": "1.0.0",
+  "description": "CarPlates UA API automation",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js",
+    "get-token": "node scripts/get-token.js"
+  },
+  "dependencies": {
+    "puppeteer": "^21.0.0"
+  },
+  "devDependencies": {},
+  "keywords": ["carplates", "api", "automation"],
+  "author": "Your Name",
+  "license": "MIT"
+}
