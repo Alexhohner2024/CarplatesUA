@@ -8,11 +8,17 @@
     "get-token": "node scripts/get-token.js"
   },
   "dependencies": {
-    "puppeteer": "^21.0.0",
-    "node-telegram-bot-api": "^0.66.0"
+    "node-telegram-bot-api": "^0.66.0",
+    "puppeteer": "^21.0.0"
   },
-  "devDependencies": {},
-  "keywords": ["carplates", "api", "automation"],
+  "devDependencies": {
+    "@flydotio/dockerfile": "^0.7.10"
+  },
+  "keywords": [
+    "carplates",
+    "api",
+    "automation"
+  ],
   "author": "Your Name",
   "license": "MIT"
 }
