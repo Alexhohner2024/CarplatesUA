@@ -22,7 +22,9 @@ jobs:
         run: npm install
         
       - name: Install Chrome
-        run: npx @puppeteer/browsers install chrome@stable
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y chromium-browser
         
       - name: Get new token
         run: node scripts/get-token.js
