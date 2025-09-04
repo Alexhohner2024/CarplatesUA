@@ -22,7 +22,7 @@ jobs:
         run: npm install
         
       - name: Install Chrome
-        run: npx puppeteer browsers install chrome
+        run: npx @puppeteer/browsers install chrome@stable
         
       - name: Get new token
         run: node scripts/get-token.js
