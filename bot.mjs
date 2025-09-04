@@ -149,13 +149,16 @@ bot.on('message', async (msg) => {
   `, { parse_mode: 'HTML' });
 
   try {
+    // Транслитерируем если нужно для API запроса
+    const requestText = transliterateUkrainianPlate(text.toUpperCase());
+    
     // Запрос к нашему API
     const response = await fetch(API_URL, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json'
       },
-      body: JSON.stringify({ vin: text.toUpperCase() })
+      body: JSON.stringify({ vin: requestText })
     });
 
     const data = await response.json();
