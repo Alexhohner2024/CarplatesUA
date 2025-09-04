@@ -114,7 +114,8 @@ export default async function handler(req, res) {
       const owner = data.unicards.find(card => card.id === 'owner');
       if (owner && owner.location && owner.location.address) {
         const address = owner.location.address;
-        const cityMatch = address.split('\n')[0].replace('М.', '').trim();
+        const lines = address.split('\n');
+        const cityMatch = lines[lines.length - 1].trim();
         if (cityMatch) {
           carInfo.settlement = cityMatch;
         }
