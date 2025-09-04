@@ -4,7 +4,7 @@
   "description": "CarPlates UA API automation",
   "main": "index.js",
   "scripts": {
-    "start": "node index.js",
+    "start": "node bot.js",
     "get-token": "node scripts/get-token.js"
   },
   "dependencies": {
