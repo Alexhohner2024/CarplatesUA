@@ -1,30 +1,36 @@
-2025-09-04T12:06:14.439Z [info] Поиск информации для: WV1ZZZ2DZ5H007824
-2025-09-04T12:06:14.915Z [info] Full API response: {
+Full CarPlates API response: {
   "success": true,
-  "plate": "ВН3814СР",
-  "plate_en": "BH3814CP",
-  "vin": "WV1ZZZ2DZ5H007824",
-  "color": "БІЛИЙ",
+  "plate": "АА1234ВВ",
+  "plate_en": "AA1234BB",
+  "plate_countries": [
+    "ua"
+  ],
+  "color": "СІРИЙ",
+  "photo_token": "X5+PiwfmT6zCGHNzQg==",
   "image": {
     "exact_color": false,
     "url": null,
-    "logo": "https://cdn.carplates.app/logo/volkswagen.png"
+    "logo": "https://cdn.carplates.app/logo/audi.png"
   },
-  "photo_token": "ekZwkC869omFxUfQDw==",
+  "suggested": [],
   "is_payment_required": true,
   "unicards": [
     {
       "id": "gov_registration",
       "is_payment_required": true,
       "title": "Держ. реєстрація",
-      "subtitle": "Україна",
       "info": "Виконується перевірка транспортного засобу по базі МВС.\n        \nЗверніть увагу, що база МВС доступна лише з 1 січня 2013 року, що істотно обмежує результат пошуку.\n        \nЗазначена вартість автомобіля є середньою для даної моделі цього ж року і не враховує особливостей саме цього авто.\n        \nОсновне джерело інформації реєстр МВС на data.gov.ua",
-      "brand": "VOLKSWAGEN",
-      "model": "LT 46",
-      "make_year": 2004,
+      "brand": "AUDI",
+      "model": "E-TRON",
+      "make_year": 2019,
+      "price": {
+        "value": "≈ 40900",
+        "currency": "$",
+        "is_whitelisted": true
+      },
       "location": {
-        "address": "68600, м. Ізмаїл просп. Суворова, 362",
-        "location": "ТСЦ 5144",
+        "address": "04073, м. Київ, пр-т Степана Бандери,  26 В, ТЦ \"Метро\"",
+        "location": "ТСЦ 8043",
         "whitelisted": true,
         "label": "Зроблено в департаменті",
         "icon": "ic_map",
@@ -32,24 +38,33 @@
       },
       "properties": [
         {
-          "icon": "BH",
+          "icon": "AA",
           "label": "Регіон",
-          "value": "Одеська область",
+          "value": "Місто Київ",
           "is_large": true,
           "color": "ffffff",
           "whitelisted": true
         },
         {
+          "icon": "ic_license_plate",
+          "label": "Вартість номера",
+          "value": "21600 грн.<br><small>Послідовні цифри 0123 або 1234</small><b></b>",
+          "is_large": true,
+          "whitelisted": true
+        },
+        {
           "icon": "ic_calendar",
           "label": "Дата першої реєстрації",
-          "value": "%%$$-%*-#*",
+          "value": "%$%#-%#-$%",
           "is_large": true
         },
         {
           "icon": "ic_barcode",
           "label": "VIN",
-          "value": "WV1ZZZ2DZ5H007824",
+          "value": "WA1V********09123<br><small>Доступно після авторизації</small><b></b>",
           "is_large": true,
+          "action": "auth",
+          "lock": true,
           "whitelisted": true
         },
         {
@@ -61,21 +76,21 @@
         {
           "icon": "ic_calendar",
           "label": "Дата запису",
-          "value": "2024-05-14",
+          "value": "2021-03-11",
           "is_large": false,
           "whitelisted": true
         },
         {
           "icon": "ic_license_plate",
           "label": "Держ. номер",
-          "value": "BH3814CP",
+          "value": "AA1234BB",
           "is_large": false,
           "whitelisted": true
         },
         {
           "icon": "ic_record",
           "label": "Запис",
-          "value": "ПЕРЕРЕЄСТРАЦІЯ НА НОВОГО ВЛАСНИКА ЗА ДОГ. КУПIВЛI-ПРОДАЖУ (СГ)",
+          "value": "ПЕРВИННА РЕЄСТРАЦIЯ ТЗ ПРИДБАНОГО В ТОРГІВЕЛЬНІЙ ОРГАНІЗАЦІЇ, ЯКИЙ ВВЕЗЕНО З-ЗА КОРДОНУ",
           "is_large": true,
           "whitelisted": true
         }
@@ -85,38 +100,38 @@
         {
           "icon": "ic_rgb",
           "label": "Колір",
-          "value": "БІЛИЙ",
+          "value": "СІРИЙ",
           "whitelisted": true
         },
         {
-          "icon": "ic_truck",
+          "icon": "ic_car",
           "label": "Тип",
-          "value": "ВАНТАЖНИЙ",
+          "value": "ЛЕГКОВИЙ",
           "whitelisted": true
         },
         {
           "icon": "ic_fuel",
           "label": "Паливо",
-          "value": "ДИЗЕЛЬНЕ",
-          "whitelisted": true
-        },
-        {
-          "icon": "ic_engine",
-          "label": "Об'єм двигуна",
-          "value": "2461",
+          "value": "ЕЛЕКТРО",
           "whitelisted": true
         },
         {
           "icon": "ic_weight",
           "label": "Маса/Макс. маса",
-          "value": "2307 / 4600",
+          "value": "2610 / 3165",
           "whitelisted": true
         },
         {
-          "icon": " ",
+          "icon": "B",
           "label": "Категорія/Кузов",
-          "value": "ФУРГОН",
+          "value": "УНІВЕРСАЛ",
           "color": "ffffff",
+          "whitelisted": true
+        },
+        {
+          "icon": "ic_seating",
+          "label": "Сидячих місць",
+          "value": "5",
           "whitelisted": true
         }
       ],
@@ -138,7 +153,6 @@
     {
       "id": "wanted",
       "title": "Розшук",
-      "subtitle": "Україна",
       "message": "Авто з цим номером не знаходиться в угоні",
       "message_color": "009a00",
       "info": "Виконується перевірка транспортного засобу з актуальної базі розшуку МВС.\n        \nВідображає коротку інформацію про транспортний засіб, якщо він числиться в розшуку.\n        \nОсновне джерело інформації реєстр МВС на data.gov.ua",
@@ -152,7 +166,6 @@
       "id": "check_for_encumbrance",
       "is_payment_required": true,
       "title": "Перевірка на арешт",
-      "subtitle": "Україна",
       "message": "Перевірка на наявність арешту, проводиться після покупки звіту",
       "info": "У разі накладення арешту на автомобіль, буде неможливо здійснити реєстраційні дії.\n        \nПроводиться перевірка на наявність обмежень за Державним реєстром обтяжень рухомого майна (ДРОРМ)",
       "example": {
@@ -211,7 +224,7 @@
       "subtitle": "Україна",
       "info": "Це вся інформація яку МВС поширює про власника, так-як інші дані є персональними.\n        \nОсновне джерело інформації реєстр МВС на data.gov.ua",
       "location": {
-        "address": "ОДЕСЬКА ОБЛАСТЬ\nІЗМАЇЛЬСЬКИЙ РАЙОН\nУТКОНОСІВСЬКА\nСело УТКОНОСІВКА",
+        "address": "М.КИЇВ\nРайон СОЛОМ'ЯНСЬКИЙ",
         "label": "Адреса",
         "icon": "ic_map",
         "zoom": 10
@@ -228,57 +241,94 @@
       "whitelisted": []
     },
     {
-      "id": "dimensions_and_weight_control",
-      "title": "Габаритно-ваговий контроль",
-      "subtitle": "Україна",
-      "message": "Порушення не виявлено",
-      "message_color": "009a00",
-      "info": "Основне джерело інформації реєстр Укртрансбезпеки на data.gov.ua",
+      "id": "gov_registration",
+      "is_payment_required": true,
+      "title": "Держ. реєстрація",
+      "subtitle": "США",
+      "brand": "Audi",
+      "model": "e-tron Quattro Prestige",
+      "make_year": 2019,
       "location": {},
-      "properties": [],
+      "properties": [
+        {
+          "icon": "ic_calendar",
+          "label": "Останній запис",
+          "value": "#*#*-$#-$%"
+        },
+        {
+          "icon": "ic_speedometer",
+          "label": "Одометр (км)",
+          "value": "%*"
+        },
+        {
+          "icon": "ic_accident_damaged_vehicles",
+          "label": "Кількість ДТП",
+          "value": "*",
+          "is_large": false,
+          "scale": 1.5
+        },
+        {
+          "icon": "ic_id_card",
+          "label": "Кількість власників",
+          "value": "$"
+        },
+        {
+          "icon": "ic_barcode",
+          "label": "VIN",
+          "value": "WA1V********09123<br><small>Доступно після авторизації</small><b></b>",
+          "is_large": true,
+          "lock": true,
+          "action": "auth",
+          "whitelisted": true
+        }
+      ],
       "properties_horizontal": [],
       "photos": [],
       "whitelisted": []
     },
     {
-      "id": "bill_of_lading",
+      "id": "was_on_sale",
       "is_payment_required": true,
-      "title": "Митна накладна",
-      "subtitle": "Україна - Імпорт",
-      "trim": " ",
+      "title": "Було на продажу",
+      "subtitle": "США",
+      "brand": "Audi",
+      "model": "e-tron",
+      "make_year": 2019,
+      "trim": "Premium Plus",
       "price": {
-        "value": "####",
+        "value": "#####",
         "currency": "$"
       },
       "location": {},
       "properties": [
         {
-          "icon": "ic_calendar",
-          "label": "Дата",
-          "value": "*$%$-##-%*"
+          "icon": "ic_rgb",
+          "label": "Колір",
+          "value": "$%*%#*% %$%% $*%$* %$##*$"
         },
         {
-          "icon": "ic_weight",
-          "label": "Маса",
-          "value": "**#*"
+          "icon": "ic_speedometer",
+          "label": "Одометр (км)",
+          "value": "**"
         },
         {
-          "icon": "ic_earth_globe",
-          "label": "Країна продавця",
-          "value": "*$##$І*",
-          "is_large": false
+          "icon": "ic_car",
+          "label": "Кузов",
+          "value": "#$%"
+        },
+        {
+          "icon": "ic_record",
+          "label": "Стан",
+          "value": "$*#$"
         },
         {
           "icon": "ic_barcode",
-          "label": "HS код",
-          "value": "$#$$*$*%%*",
-          "is_large": false
-        },
-        {
-          "icon": "ic_container",
-          "label": "Товар",
-          "value": "$.*$%$%###$ *#$#*$%і## $*%## \"*$%#%*#**%\", $*#%$# \"$* ##\", і$**$%$і*$%і#*%# %$%*% ($*#$%%)-<$>%#$*$%$*$$#%#**%%</#>, *%****** $і%*$і%#$ $і#$*, %$$%$$*$# $і##* #$%і*-$, *$#*%%*%%%$ $%$ $##$##$$%%%# %* #%$%*$* #$*$*$#$%% #$%#$%%%#*$$ (**# *$%%%%#%$*% *$#*$%і$), #%*%* (*$$%%$##$#) *#$$%#%-$/$, %$#*#% *%##$*#%#, %*%%$## *#'є# *#%і**#і$-*##%$#$, %$*$**%$і$*$*$і%%*-%,**%*, **** * %*#і %%###$*##**%$ *%$#*##*%$*%-*,$$$$, %$ #%# $ %#$$$$#$#%#і, %%*і%%* #*#%*%#-#%*, ##$ %*###%-###$$$, %#*%## ##%$і*$*%$* *%%$#%#%*$* *і# $#%і#%$ #*$і$ ## #*$*$#*** %і**і#*%%#$, $і%$#$#і #і$#* # *$$%%#% #*$%#%$, %і$*$%*і *%$%%#$і *$%#%# $$* ##і$%$%$$ #$$і## $% #%$#*$*$#$*$ $$*$**$ї% $#$#$%$,*і#%#%$і * $$$%і* $#**#$і $$*%%% ##$*#$*$*#* $$%*#%#%%$ %# *$%$** $#$$#$%#, *%*#%%#$#$% $і# *$$%#$$#*$%*-$$$*, $%*$#%#%* $і% ##$##$*%$*%*-###%, *% $*$*$%*$#$** ## $%#і ###%*% #%$#$*#$% %%*%#*#і#$.",
-          "is_large": true
+          "label": "VIN",
+          "value": "WA1V********09123<br><small>Доступно після авторизації</small><b></b>",
+          "is_large": true,
+          "lock": true,
+          "action": "auth",
+          "whitelisted": true
         }
       ],
       "properties_horizontal": [],
@@ -288,30 +338,126 @@
     {
       "id": "vin_decode",
       "title": "Розшифровка VIN",
-      "brand": "Volkswagen Commercial Vehicles",
+      "brand": "AUDI",
+      "make_year": 2019,
       "location": {},
       "properties": [
         {
           "icon": "ic_earth_globe",
           "label": "Виготовлено в",
-          "value": "Europe\nWest Germany",
+          "value": "Europe\nBELGIUM\nBRUSSELS",
           "is_large": true
         },
         {
           "icon": "ic_barcode",
           "label": "VIN",
-          "value": "WV1ZZZ2DZ5H007824",
+          "value": "WA1V********09123<br><small>Доступно після авторизації</small><b></b>",
           "is_large": true,
+          "lock": true,
+          "action": "auth",
           "whitelisted": true
         }
       ],
       "properties_horizontal": [],
       "details": {
         "label": "Детальніше",
-        "properties": []
+        "properties": [
+          {
+            "value": "Загальна"
+          },
+          {
+            "label": "Тип транспортного засобу",
+            "value": "Багатоцільовий пасажирський транспортний засіб (MPV)"
+          },
+          {
+            "label": "Виробник",
+            "value": "AUDI"
+          },
+          {
+            "label": "Модель",
+            "value": "e-tron"
+          },
+          {
+            "label": "Рік випуску",
+            "value": "2019"
+          },
+          {
+            "label": "Серія",
+            "value": "e-tron quattro Prestige"
+          },
+          {
+            "label": "Місто Виробник",
+            "value": "BRUSSELS"
+          },
+          {
+            "label": "Країна Виробник",
+            "value": "BELGIUM"
+          },
+          {
+            "value": "Двигун"
+          },
+          {
+            "label": "Потужність двигуна (кВт)",
+            "value": "299.7714"
+          },
+          {
+            "label": "Тип палива - первинний",
+            "value": "Електричні"
+          },
+          {
+            "label": "Тип двигуна",
+            "value": "Акумуляторний електромобіль"
+          },
+          {
+            "value": "Зовнішній вигляд"
+          },
+          {
+            "label": "Кузов",
+            "value": "Sport Utility Vehicle (SUV)/Multi-Purpose Vehicle (MPV)"
+          },
+          {
+            "label": "Двері",
+            "value": "4"
+          },
+          {
+            "value": "Механічні"
+          },
+          {
+            "label": "Коробка передач",
+            "value": "Автоматична"
+          },
+          {
+            "value": "Пасивна система безпеки"
+          },
+          {
+            "label": "Тип ременів безпеки",
+            "value": "Ручний"
+          },
+          {
+            "label": "Розташування подушки безпеки",
+            "value": "Всі ряди"
+          },
+          {
+            "label": "Передні подушки безпеки",
+            "value": "1-й ряд (водій і пасажир)"
+          },
+          {
+            "label": "Подушки безпеки підколінні",
+            "value": "1-й ряд (водій і пасажир)"
+          },
+          {
+            "label": "Розташування бічній подушки безпеки",
+            "value": "1-й ряд (водій і пасажир)"
+          }
+        ]
       },
       "photos": [],
       "whitelisted": []
     }
-  ]
+  ],
+  "promo_button": {
+    "url": "https://polis.carplates.app",
+    "title": "Купити страховку",
+    "icon": "ic_insurance"
+  }
 }
