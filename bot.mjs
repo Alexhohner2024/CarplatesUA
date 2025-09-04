@@ -1,7 +1,7 @@
-const TelegramBot = require('node-telegram-bot-api');
+import TelegramBot from 'node-telegram-bot-api';
 
-// Токен бота от @BotFather
-const token = '7499296381:AAEL8pi2TBPQS__EomvcvmtBwgpsgKRiYN8';
+// Токен бота из переменной окружения
+const token = process.env.BOT_TOKEN;
 const bot = new TelegramBot(token, { polling: true });
 
 // URL вашего Vercel API
