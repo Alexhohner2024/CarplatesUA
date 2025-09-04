@@ -1,6 +1,7 @@
 {
   "name": "carplates-ua",
   "version": "1.0.0",
+  "type": "module",
   "description": "CarPlates UA API automation",
   "main": "index.js",
   "scripts": {
