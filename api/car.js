@@ -69,6 +69,7 @@ export default async function handler(req, res) {
     if (data.unicards && data.unicards.length > 0) {
       const govReg = data.unicards.find(card => card.id === 'gov_registration');
       const vinDecode = data.unicards.find(card => card.id === 'vin_decode');
+      const owner = data.unicards.find(card => card.id === 'owner');
 
       if (govReg) {
         carInfo.brand = govReg.brand;
@@ -101,6 +102,16 @@ export default async function handler(req, res) {
           if (dateProp && dateProp.value !== '$$*#-**-*$') {
             carInfo.registration_date = dateProp.value;
           }
+        }
+      }
+
+      // Извлекаем населенный пункт из owner карточки
+      if (owner && owner.location && owner.location.address) {
+        const address = owner.location.address;
+        // Извлекаем город из первой строки (убираем префикс М.)
+        const cityMatch = address.split('\n')[0].replace('М.', '').trim();
+        if (cityMatch) {
+          carInfo.settlement = cityMatch;
         }
       }
 
