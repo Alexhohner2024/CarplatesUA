@@ -13,6 +13,36 @@ export default async function handler(req, res) {
 
     console.log('Поиск информации для VIN:', vin);
 
+    // Первая попытка запроса
+    let result = await makeCarPlatesRequest(vin);
+    
+    // Если ошибка авторизации - обновляем токен и повторяем
+    if (result.authError) {
+      console.log('Токен истек, обновляем...');
+      await triggerTokenUpdate();
+      
+      // Ждем и повторяем запрос
+      await new Promise(resolve => setTimeout(resolve, 15000));
+      result = await makeCarPlatesRequest(vin);
+    }
+
+    if (result.error) {
+      return res.status(500).json({ error: result.error });
+    }
+
+    return res.status(200).json(result.data);
+
+  } catch (error) {
+    console.error('API Error:', error);
+    return res.status(500).json({ 
+      error: 'Internal server error',
+      message: error.message 
+    });
+  }
+}
+
+async function makeCarPlatesRequest(vin) {
+  try {
     // Запрос к CarPlates API
     const response = await fetch('https://api.carplates.app/summary', {
       method: 'POST',
@@ -29,21 +59,23 @@ export default async function handler(req, res) {
       body: JSON.stringify({ input: vin })
     });
 
+    // Проверяем ошибки авторизации
+    if (response.status === 401 || response.status === 403) {
+      return { authError: true };
+    }
+
     if (!response.ok) {
       console.error('CarPlates API error:', response.status);
-      return res.status(response.status).json({ 
-        error: 'Failed to fetch car data',
-        status: response.status 
-      });
+      return { error: `API error: ${response.status}` };
     }
 
     const data = await response.json();
 
     if (data.error) {
-      return res.status(400).json({ error: 'Car not found or invalid VIN' });
+      return { error: 'Car not found or invalid VIN' };
     }
 
-    // Извлекаем основную информацию
+    // Извлекаем основную информацию (как в оригинале)
     const carInfo = {
       success: true,
       plate: data.plate,
@@ -93,7 +125,7 @@ export default async function handler(req, res) {
           if (regionProp) carInfo.region = regionProp.value;
 
           const dateProp = govReg.properties.find(p => p.label === 'Дата першої реєстрації');
-          if (dateProp && dateProp.value !== '$$*#-**-*$') {
+          if (dateProp && dateProp.value !== '$*#-**-*) {
             carInfo.registration_date = dateProp.value;
           }
         }
@@ -106,13 +138,35 @@ export default async function handler(req, res) {
       }
     }
 
-    return res.status(200).json(carInfo);
+    return { data: carInfo };
 
   } catch (error) {
-    console.error('API Error:', error);
-    return res.status(500).json({ 
-      error: 'Internal server error',
-      message: error.message 
-    });
+    return { error: error.message };
+  }
+}
+
+async function triggerTokenUpdate() {
+  try {
+    // Запускаем GitHub Actions workflow
+    const response = await fetch(
+      `https://api.github.com/repos/Alexhohner2024/CarplatesUA/actions/workflows/update-token.yml/dispatches`,
+      {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${process.env.GITHUB_TOKEN}`,
+          'Content-Type': 'application/json',
+          'User-Agent': 'CarPlates-Bot'
+        },
+        body: JSON.stringify({ ref: 'main' })
+      }
+    );
+
+    if (response.ok) {
+      console.log('Запущено обновление токена');
+    } else {
+      console.log('Ошибка запуска обновления:', response.status);
+    }
+  } catch (error) {
+    console.error('Ошибка GitHub API:', error);
   }
 }
