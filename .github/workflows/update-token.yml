@@ -10,29 +10,23 @@ jobs:
     runs-on: ubuntu-latest
     
     steps:
-      - name: Checkout repository
+      - name: Checkout
         uses: actions/checkout@v4
-
+        
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
           node-version: '18'
-
-      - name: Setup Chrome
-        uses: browser-actions/setup-chrome@latest
-
+          
       - name: Install dependencies
-        run: npm install puppeteer
-
+        run: npm install
+        
+      - name: Install Chrome
+        run: npx puppeteer browsers install chrome
+        
       - name: Get new token
         run: node scripts/get-token.js
-
-      - name: Update Vercel environment variable
         env:
           VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
           VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
           VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
-        run: |
-          npm install -g vercel
-          vercel env rm AUTH_TOKEN production --yes --token $VERCEL_TOKEN --scope $VERCEL_ORG_ID || true
-          echo $NEW_AUTH_TOKEN | vercel env add AUTH_TOKEN production --token $VERCEL_TOKEN --scope $VERCEL_ORG_ID
