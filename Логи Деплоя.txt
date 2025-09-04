@@ -1,0 +1,265 @@
+flyctl deploy --build-only --push -a carplatesua --image-label deployment-1aba327f8417c1ffd18f2aa2c049ad95 --config fly.toml
+
+==> Verifying app config
+
+Validating fly.toml
+
+✓ Configuration is valid
+
+--> Verified app config
+
+==> Building image
+
+Waiting for depot builder...
+
+
+==> Building image with Depot
+
+--> build: (​)
+
+#1 [internal] load build definition from Dockerfile
+
+#1 transferring dockerfile: 1.12kB done
+
+#1 DONE 0.0s
+
+
+#2 resolve image config for docker-image://docker.io/docker/dockerfile:1
+
+#2 DONE 0.2s
+
+
+#3 docker-image://docker.io/docker/dockerfile:1@sha256:38387523653efa0039f8e1c89bb74a30504e76ee9f565e25c9a09841f9427b05
+
+#3 resolve docker.io/docker/dockerfile:1@sha256:38387523653efa0039f8e1c89bb74a30504e76ee9f565e25c9a09841f9427b05 done
+
+#3 CACHED
+
+
+#1 [internal] load build definition from Dockerfile
+
+#1 transferring dockerfile: 1.12kB done
+
+#1 DONE 0.0s
+
+
+#4 [internal] load build definition from Dockerfile
+
+#4 Deduplicating step ID [internal] load build definition from Dockerfile, another build is calculating it done
+
+#4 DONE 0.0s
+
+
+#5 [internal] load metadata for docker.io/library/node:20.18.0-slim
+
+#5 DONE 0.1s
+
+
+#6 [internal] load .dockerignore
+
+#6 transferring context: 99B done
+
+#6 DONE 0.0s
+
+
+#7 [base 1/2] FROM docker.io/library/node:20.18.0-slim@sha256:28fbbb764069c698ead61d6a739a7615e8f0e07a4b8fe1473ceca70c1c3d6aaa
+
+#7 resolve docker.io/library/node:20.18.0-slim@sha256:28fbbb764069c698ead61d6a739a7615e8f0e07a4b8fe1473ceca70c1c3d6aaa done
+
+#7 DONE 0.0s
+
+
+#8 [internal] load build context
+
+#8 transferring context: 165.07kB 0.0s done
+
+#8 DONE 0.0s
+
+
+#9 [base 2/2] WORKDIR /app
+
+#9 CACHED
+
+
+#10 [build 1/4] RUN apt-get update -qq && apt-get install --no-install-recommends -y build-essential node-gyp pkg-config python-is-python3
+
+#10 CACHED
+
+
+#11 [build 2/4] COPY package-lock.json package.json ./
+
+#11 DONE 0.0s
+
+
+#12 [build 3/4] RUN npm ci
+
+#12 2.270 npm warn deprecated har-validator@5.1.5: this library is no longer supported
+
+#12 2.404 npm warn deprecated request@2.88.2: request has been deprecated, see https://github.com/request/request/issues/3142
+
+#12 2.434 npm warn deprecated uuid@3.4.0: Please upgrade to version 7 or higher. Older versions may use Math.random() in certain circumstances, which is known to be problematic. See https://v8.dev/blog/math-random for details.
+
+#12 2.550 npm warn deprecated puppeteer@21.11.0: < 24.9.0 is no longer supported
+
+#12 613.8
+
+#12 613.8 added 285 packages, and audited 286 packages in 10m
+
+#12 613.8
+
+#12 613.8 82 packages are looking for funding
+
+#12 613.8 run `npm fund` for details
+
+#12 613.8
+
+#12 613.8 11 vulnerabilities (4 moderate, 5 high, 2 critical)
+
+#12 613.8
+
+#12 613.8 To address all issues (including breaking changes), run:
+
+#12 613.8 npm audit fix --force
+
+#12 613.8
+
+#12 613.8 Run `npm audit` for details.
+
+#12 613.8 npm notice
+
+#12 613.8 npm notice New major version of npm available! 10.8.2 -> 11.6.0
+
+#12 613.8 npm notice Changelog: https://github.com/npm/cli/releases/tag/v11.6.0
+
+#12 613.8 npm notice To update run: npm install -g npm@11.6.0
+
+#12 613.8 npm notice
+
+#12 DONE 613.9s
+
+
+#13 [build 4/4] COPY . .
+
+#13 DONE 0.2s
+
+
+#14 [stage-2 1/2] RUN apt-get update -qq && apt-get install --no-install-recommends -y chromium chromium-sandbox && rm -rf /var/lib/apt/lists /var/cache/apt/archives
+
+#14 CACHED
+
+
+#15 [stage-2 2/2] COPY --from=build /app /app
+
+#15 DONE 1.3s
+
+
+#16 exporting to image
+
+#16 exporting layers
+
+#16 exporting layers 0.6s done
+
+#16 exporting manifest sha256:fe1871761fa082667c28584b29a403e815aa23c0c567d91bf009b512ec207d88 done
+
+#16 exporting config sha256:c4471331be21f894e81f1bd1a87ce2d483451427eff272a7527a65ff1b199f62 done
+
+#16 pushing layers for registry.fly.io/carplatesua:deployment-1aba327f8417c1ffd18f2aa2c049ad95@sha256:fe1871761fa082667c28584b29a403e815aa23c0c567d91bf009b512ec207d88
+
+#16 pushing layer sha256:4971311cacbc81d0a0402323600fae8432bfd6e92655da1f3fafd0926fe278cc
+
+#16 pushing layer sha256:126e1b242ff4c00860503fe13920a07cd33fb6e6c5f86c582548b7344bb0b73c
+
+#16 pushing layer sha256:c4471331be21f894e81f1bd1a87ce2d483451427eff272a7527a65ff1b199f62
+
+#16 pushing layer sha256:1513d70a5880982b71dce8ee5754a6327f655ea41dff11a786ba52c5fc71eb85
+
+#16 pushing layer sha256:2d429b9e73a6cf90a5bb85105c8118b30a1b2deedeae3ea9587055ffcb80eb45
+
+#16 pushing layer sha256:56a39ca89bf4415a72fa8633073926c374d145c8322d7b8d8d7e4161ad21e299
+
+#16 pushing layer sha256:1c8c3ce2d25b3790c6a16b9106a930aef952a3980a1bb6131336380851a25e4e
+
+#16 pushing layer sha256:c93105b35e167b45467e5b86e220e65e83f7ac848a296d207c1b30e3c56dfea4
+
+#16 pushing layer sha256:c12a3eabad5091fb18cd95b10e09a45c86a1256ebd46b64300f50096d503305e
+
+#16 pushing layer sha256:c12a3eabad5091fb18cd95b10e09a45c86a1256ebd46b64300f50096d503305e 0.4s done
+
+#16 pushing layer sha256:126e1b242ff4c00860503fe13920a07cd33fb6e6c5f86c582548b7344bb0b73c 0.4s done
+
+#16 pushing layer sha256:1513d70a5880982b71dce8ee5754a6327f655ea41dff11a786ba52c5fc71eb85 0.4s done
+
+#16 pushing layer sha256:56a39ca89bf4415a72fa8633073926c374d145c8322d7b8d8d7e4161ad21e299 0.5s done
+
+#16 pushing layer sha256:1c8c3ce2d25b3790c6a16b9106a930aef952a3980a1bb6131336380851a25e4e 0.5s done
+
+#16 pushing layer sha256:2d429b9e73a6cf90a5bb85105c8118b30a1b2deedeae3ea9587055ffcb80eb45 0.5s done
+
+#16 pushing layer sha256:c93105b35e167b45467e5b86e220e65e83f7ac848a296d207c1b30e3c56dfea4 0.5s done
+
+#16 pushing layer sha256:c4471331be21f894e81f1bd1a87ce2d483451427eff272a7527a65ff1b199f62 1.4s done
+
+#16 pushing layers for registry.fly.io/carplatesua:deployment-1aba327f8417c1ffd18f2aa2c049ad95@sha256:fe1871761fa082667c28584b29a403e815aa23c0c567d91bf009b512ec207d88 2.0s done
+
+#16 pushing layer sha256:4971311cacbc81d0a0402323600fae8432bfd6e92655da1f3fafd0926fe278cc 2.0s done
+
+#16 pushing manifest for registry.fly.io/carplatesua:deployment-1aba327f8417c1ffd18f2aa2c049ad95@sha256:fe1871761fa082667c28584b29a403e815aa23c0c567d91bf009b512ec207d88
+
+#16 pushing manifest for registry.fly.io/carplatesua:deployment-1aba327f8417c1ffd18f2aa2c049ad95@sha256:fe1871761fa082667c28584b29a403e815aa23c0c567d91bf009b512ec207d88 1.3s done
+
+#16 DONE 3.9s
+
+--> Build Summary: (​)
+
+--> Building image done
+
+image: registry.fly.io/carplatesua:deployment-1aba327f8417c1ffd18f2aa2c049ad95
+
+image size: 335 MB
+
+
+
+
+Deploy application
+flyctl deploy -a carplatesua --image registry.fly.io/carplatesua:deployment-1aba327f8417c1ffd18f2aa2c049ad95 --depot-scope=app --config fly.toml
+
+==> Verifying app config
+
+Validating fly.toml
+
+✓ Configuration is valid
+
+--> Verified app config
+
+==> Building image
+
+Searching for image 'registry.fly.io/carplatesua:deployment-1aba327f8417c1ffd18f2aa2c049ad95' remotely...
+
+image found: img_0lq74783lyddp6x3
+
+
+Watch your deployment at https://fly.io/apps/carplatesua/monitoring
+
+
+Updating existing machines in 'carplatesua' with rolling strategy
+
+> Acquiring lease for 3287d91a64e158
+
+> Acquired lease for 3287d91a64e158
+
+> Updating machine config for 3287d91a64e158
+
+> Updating 3287d91a64e158 [app]
+
+> Updated machine config for 3287d91a64e158
+
+✔ Machine 3287d91a64e158 is now in a good state
+
+> Clearing lease for 3287d91a64e158
+
+✔ Cleared lease for 3287d91a64e158
+
+Checking DNS configuration for carplatesua.fly.dev
+
+
+Visit your newly deployed app at https://carplatesua.fly.dev/
