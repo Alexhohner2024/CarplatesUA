@@ -1,0 +1,102 @@
+flyctl deploy --build-only --push -a carplatesua --image-label deployment-1aba327f8417c1ffd18f2aa2c049ad95 --config fly.toml
+
+==> Verifying app config
+
+Validating fly.toml
+
+✓ Configuration is valid
+
+--> Verified app config
+
+==> Building image
+
+Waiting for depot builder...
+
+
+==> Building image with Depot
+
+--> build: (​)
+
+#1 [internal] load build definition from Dockerfile
+
+#1 transferring dockerfile: 1.12kB done
+
+#1 DONE 0.0s
+
+
+#2 resolve image config for docker-image://docker.io/docker/dockerfile:1
+
+#2 DONE 0.2s
+
+
+#3 docker-image://docker.io/docker/dockerfile:1@sha256:38387523653efa0039f8e1c89bb74a30504e76ee9f565e25c9a09841f9427b05
+
+#3 resolve docker.io/docker/dockerfile:1@sha256:38387523653efa0039f8e1c89bb74a30504e76ee9f565e25c9a09841f9427b05 done
+
+#3 CACHED
+
+
+#1 [internal] load build definition from Dockerfile
+
+#1 transferring dockerfile: 1.12kB done
+
+#1 DONE 0.0s
+
+
+#4 [internal] load build definition from Dockerfile
+
+#4 Deduplicating step ID [internal] load build definition from Dockerfile, another build is calculating it done
+
+#4 DONE 0.0s
+
+
+#5 [internal] load metadata for docker.io/library/node:20.18.0-slim
+
+#5 DONE 0.1s
+
+
+#6 [internal] load .dockerignore
+
+#6 transferring context: 99B done
+
+#6 DONE 0.0s
+
+
+#7 [base 1/2] FROM docker.io/library/node:20.18.0-slim@sha256:28fbbb764069c698ead61d6a739a7615e8f0e07a4b8fe1473ceca70c1c3d6aaa
+
+#7 resolve docker.io/library/node:20.18.0-slim@sha256:28fbbb764069c698ead61d6a739a7615e8f0e07a4b8fe1473ceca70c1c3d6aaa done
+
+#7 DONE 0.0s
+
+
+#8 [internal] load build context
+
+#8 transferring context: 165.07kB 0.0s done
+
+#8 DONE 0.0s
+
+
+#9 [base 2/2] WORKDIR /app
+
+#9 CACHED
+
+
+#10 [build 1/4] RUN apt-get update -qq && apt-get install --no-install-recommends -y build-essential node-gyp pkg-config python-is-python3
+
+#10 CACHED
+
+
+#11 [build 2/4] COPY package-lock.json package.json ./
+
+#11 DONE 0.0s
+
+
+#12 [build 3/4] RUN npm ci
+
+#12 2.270 npm warn deprecated har-validator@5.1.5: this library is no longer supported
+
+#12 2.404 npm warn deprecated request@2.88.2: request has been deprecated, see https://github.com/request/request/issues/3142
+
+#12 2.434 npm warn deprecated uuid@3.4.0: Please upgrade to version 7 or higher. Older versions may use Math.random() in certain circumstances, which is known to be problematic. See https://v8.dev/blog/math-random for details.
+
+#12 2.550 npm warn deprecated puppeteer@21.11.0: < 24.9.0 is no longer supported
