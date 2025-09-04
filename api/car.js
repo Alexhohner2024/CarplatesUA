@@ -75,7 +75,7 @@ async function makeCarPlatesRequest(vin) {
       return { error: 'Car not found or invalid VIN' };
     }
 
-    // Извлекаем основную информацию (как в оригинале)
+    // Извлекаем основную информацию
     const carInfo = {
       success: true,
       plate: data.plate,
@@ -125,7 +125,7 @@ async function makeCarPlatesRequest(vin) {
           if (regionProp) carInfo.region = regionProp.value;
 
           const dateProp = govReg.properties.find(p => p.label === 'Дата першої реєстрації');
-          if (dateProp && dateProp.value !== '$*#-**-*) {
+          if (dateProp && dateProp.value !== '$$*#-**-*$') {
             carInfo.registration_date = dateProp.value;
           }
         }
