@@ -115,6 +115,17 @@ export default async function handler(req, res) {
         }
       }
 
+      // Извлекаем населенный пункт из owner карточки
+      const owner = data.unicards.find(card => card.id === 'owner');
+      if (owner && owner.location && owner.location.address) {
+        const address = owner.location.address;
+        // Извлекаем город из первой строки (убираем префикс М.)
+        const cityMatch = address.split('\n')[0].replace('М.', '').trim();
+        if (cityMatch) {
+          carInfo.settlement = cityMatch;
+        }
+      }
+
       if (vinDecode) {
         if (!carInfo.brand) carInfo.brand = vinDecode.brand;
         if (!carInfo.model) carInfo.model = vinDecode.model;
