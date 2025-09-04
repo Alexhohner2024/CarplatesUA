@@ -1,20 +1,23 @@
 export default async function handler(req, res) {
-  // Только POST запросы
-  if (req.method !== 'POST') {
+  // Поддерживаем POST и GET запросы
+  if (req.method !== 'POST' && req.method !== 'GET') {
     return res.status(405).json({ error: 'Method not allowed' });
   }
 
   try {
-    const { vin } = req.body;
+    // Получаем параметры из тела или query
+    const input = req.method === 'POST' 
+      ? req.body?.vin || req.body?.plate 
+      : req.query?.vin || req.query?.plate;
 
-    if (!vin) {
-      return res.status(400).json({ error: 'VIN code is required' });
+    if (!input) {
+      return res.status(400).json({ error: 'VIN code or plate number is required' });
     }
 
-    console.log('Поиск информации для VIN:', vin);
+    console.log('Поиск информации для:', input);
 
     // Первая попытка запроса
-    let result = await makeCarPlatesRequest(vin);
+    let result = await makeCarPlatesRequest(input);
     
     // Если ошибка авторизации - обновляем токен и повторяем
     if (result.authError) {
@@ -23,7 +26,7 @@ export default async function handler(req, res) {
       
       // Ждем и повторяем запрос
       await new Promise(resolve => setTimeout(resolve, 15000));
-      result = await makeCarPlatesRequest(vin);
+      result = await makeCarPlatesRequest(input);
     }
 
     if (result.error) {
@@ -41,7 +44,7 @@ export default async function handler(req, res) {
   }
 }
 
-async function makeCarPlatesRequest(vin) {
+async function makeCarPlatesRequest(input) {
   try {
     // Запрос к CarPlates API
     const response = await fetch('https://api.carplates.app/summary', {
@@ -56,7 +59,7 @@ async function makeCarPlatesRequest(vin) {
         'referer': 'https://ua.carplates.app/',
         'user-agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36'
       },
-      body: JSON.stringify({ input: vin })
+      body: JSON.stringify({ input: input })
     });
 
     // Проверяем ошибки авторизации
@@ -70,9 +73,18 @@ async function makeCarPlatesRequest(vin) {
     }
 
     const data = await response.json();
+    
+    // Логируем полный ответ для отладки
+    console.log('Full API response:', JSON.stringify(data, null, 2));
 
     if (data.error) {
-      return { error: 'Car not found or invalid VIN' };
+      return { 
+        data: { 
+          success: false, 
+          message: 'Информация о данном транспортном средстве не найдена в базе данных',
+          searched: input
+        } 
+      };
     }
 
     // Извлекаем основную информацию
@@ -87,8 +99,10 @@ async function makeCarPlatesRequest(vin) {
       year: null,
       engine: null,
       fuel: null,
-      mass: null,
+      mass_empty: null,
+      mass_full: null,
       region: null,
+      city: null,
       registration_date: null
     };
 
@@ -113,21 +127,39 @@ async function makeCarPlatesRequest(vin) {
                 carInfo.engine = prop.value;
                 break;
               case 'Маса/Макс. маса':
-                carInfo.mass = prop.value;
+                // Разделяем массу на две части
+                const masses = prop.value.split(' / ');
+                if (masses.length === 2) {
+                  carInfo.mass_empty = masses[0].trim();
+                  carInfo.mass_full = masses[1].trim();
+                }
                 break;
             }
           });
         }
 
-        // Извлекаем регион из properties
+        // Извлекаем детали из properties
         if (govReg.properties) {
-          const regionProp = govReg.properties.find(p => p.label === 'Регіон');
-          if (regionProp) carInfo.region = regionProp.value;
-
-          const dateProp = govReg.properties.find(p => p.label === 'Дата першої реєстрації');
-          if (dateProp && dateProp.value !== '$$*#-**-*$') {
-            carInfo.registration_date = dateProp.value;
-          }
+          govReg.properties.forEach(prop => {
+            switch(prop.label) {
+              case 'Регіон':
+                carInfo.region = prop.value;
+                break;
+              case 'Населений пункт':
+              case 'Місто':
+              case 'Село':
+              case 'City':
+                if (prop.value && prop.value !== 'N/A') {
+                  carInfo.city = prop.value;
+                }
+                break;
+              case 'Дата першої реєстрації':
+                if (prop.value && !prop.value.match(/[$#*%]/)) {
+                  carInfo.registration_date = prop.value;
+                }
+                break;
+            }
+          });
         }
       }
 
