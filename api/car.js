@@ -1,51 +1,18 @@
 export default async function handler(req, res) {
-  // Поддерживаем POST и GET запросы
-  if (req.method !== 'POST' && req.method !== 'GET') {
+  // Только POST запросы
+  if (req.method !== 'POST') {
     return res.status(405).json({ error: 'Method not allowed' });
   }
 
   try {
-    // Получаем параметры из тела или query
-    const input = req.method === 'POST' 
-      ? req.body?.vin || req.body?.plate 
-      : req.query?.vin || req.query?.plate;
+    const { vin } = req.body;
 
-    if (!input) {
-      return res.status(400).json({ error: 'VIN code or plate number is required' });
+    if (!vin) {
+      return res.status(400).json({ error: 'VIN code is required' });
     }
 
-    console.log('Поиск информации для:', input);
+    console.log('Поиск информации для VIN:', vin);
 
-    // Первая попытка запроса
-    let result = await makeCarPlatesRequest(input);
-    
-    // Если ошибка авторизации - обновляем токен и повторяем
-    if (result.authError) {
-      console.log('Токен истек, обновляем...');
-      await triggerTokenUpdate();
-      
-      // Ждем и повторяем запрос
-      await new Promise(resolve => setTimeout(resolve, 15000));
-      result = await makeCarPlatesRequest(input);
-    }
-
-    if (result.error) {
-      return res.status(500).json({ error: result.error });
-    }
-
-    return res.status(200).json(result.data);
-
-  } catch (error) {
-    console.error('API Error:', error);
-    return res.status(500).json({ 
-      error: 'Internal server error',
-      message: error.message 
-    });
-  }
-}
-
-async function makeCarPlatesRequest(input) {
-  try {
     // Запрос к CarPlates API
     const response = await fetch('https://api.carplates.app/summary', {
       method: 'POST',
@@ -59,32 +26,25 @@ async function makeCarPlatesRequest(input) {
         'referer': 'https://ua.carplates.app/',
         'user-agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36'
       },
-      body: JSON.stringify({ input: input })
+      body: JSON.stringify({ input: vin })
     });
-
-    // Проверяем ошибки авторизации
-    if (response.status === 401 || response.status === 403) {
-      return { authError: true };
-    }
 
     if (!response.ok) {
       console.error('CarPlates API error:', response.status);
-      return { error: `API error: ${response.status}` };
+      return res.status(response.status).json({ 
+        error: 'Failed to fetch car data',
+        status: response.status 
+      });
     }
 
     const data = await response.json();
-    
-    // Логируем полный ответ для отладки
-    console.log('Full API response:', JSON.stringify(data, null, 2));
+    console.log('Full CarPlates API response:', JSON.stringify(data, null, 2));
 
     if (data.error) {
-      return { 
-        data: { 
-          success: false, 
-          message: 'Информация о данном транспортном средстве не найдена в базе данных',
-          searched: input
-        } 
-      };
+      return res.status(200).json({ 
+        success: false, 
+        message: 'Автомобіль не знайдено в базі даних' 
+      });
     }
 
     // Извлекаем основную информацию
@@ -99,10 +59,9 @@ async function makeCarPlatesRequest(input) {
       year: null,
       engine: null,
       fuel: null,
-      mass_empty: null,
-      mass_full: null,
-      region: null,
-      city: null,
+      mass: null,
+      region: data.region || 'Не вказано',
+      settlement: data.settlement || 'Не вказано',
       registration_date: null
     };
 
@@ -127,39 +86,21 @@ async function makeCarPlatesRequest(input) {
                 carInfo.engine = prop.value;
                 break;
               case 'Маса/Макс. маса':
-                // Разделяем массу на две части
-                const masses = prop.value.split(' / ');
-                if (masses.length === 2) {
-                  carInfo.mass_empty = masses[0].trim();
-                  carInfo.mass_full = masses[1].trim();
-                }
+                carInfo.mass = prop.value;
                 break;
             }
           });
         }
 
-        // Извлекаем детали из properties
+        // Извлекаем регион из properties
         if (govReg.properties) {
-          govReg.properties.forEach(prop => {
-            switch(prop.label) {
-              case 'Регіон':
-                carInfo.region = prop.value;
-                break;
-              case 'Населений пункт':
-              case 'Місто':
-              case 'Село':
-              case 'City':
-                if (prop.value && prop.value !== 'N/A') {
-                  carInfo.city = prop.value;
-                }
-                break;
-              case 'Дата першої реєстрації':
-                if (prop.value && !prop.value.match(/[$#*%]/)) {
-                  carInfo.registration_date = prop.value;
-                }
-                break;
-            }
-          });
+          const regionProp = govReg.properties.find(p => p.label === 'Регіон');
+          if (regionProp) carInfo.region = regionProp.value;
+
+          const dateProp = govReg.properties.find(p => p.label === 'Дата першої реєстрації');
+          if (dateProp && dateProp.value !== '$$*#-**-*$') {
+            carInfo.registration_date = dateProp.value;
+          }
         }
       }
 
@@ -170,35 +111,13 @@ async function makeCarPlatesRequest(input) {
       }
     }
 
-    return { data: carInfo };
+    return res.status(200).json(carInfo);
 
   } catch (error) {
-    return { error: error.message };
-  }
-}
-
-async function triggerTokenUpdate() {
-  try {
-    // Запускаем GitHub Actions workflow
-    const response = await fetch(
-      `https://api.github.com/repos/Alexhohner2024/CarplatesUA/actions/workflows/update-token.yml/dispatches`,
-      {
-        method: 'POST',
-        headers: {
-          'Authorization': `Bearer ${process.env.GITHUB_TOKEN}`,
-          'Content-Type': 'application/json',
-          'User-Agent': 'CarPlates-Bot'
-        },
-        body: JSON.stringify({ ref: 'main' })
-      }
-    );
-
-    if (response.ok) {
-      console.log('Запущено обновление токена');
-    } else {
-      console.log('Ошибка запуска обновления:', response.status);
-    }
-  } catch (error) {
-    console.error('Ошибка GitHub API:', error);
+    console.error('API Error:', error);
+    return res.status(500).json({ 
+      error: 'Internal server error',
+      message: error.message 
+    });
   }
 }
