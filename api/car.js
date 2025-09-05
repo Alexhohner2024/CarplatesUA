@@ -19,6 +19,7 @@ export default async function handler(req, res) {
       headers: {
         'Content-Type': 'application/json',
         'Authorization': process.env.GOOGLE_AUTH_TOKEN,
+        'Cookie': `COMPASS=${process.env.COMPASS_COOKIE}`,
         'x-api-key': 'GvnAfeMKS3Xj4qGxpVqw3fBBjeu4MDMP',
         'x-locale': 'uk',
         'x-uuid': '67c4ed16-8622-41f7-bdc4-72195e3fef75',
