@@ -61,6 +61,7 @@ export default async function handler(req, res) {
       engine: null,
       fuel: null,
       mass: null,
+      max_mass: null,
       region: data.region || 'Не вказано',
       settlement: data.settlement || 'Не вказано',
       registration_date: null
@@ -92,7 +93,14 @@ export default async function handler(req, res) {
                 carInfo.engine = prop.value;
                 break;
               case 'Маса/Макс. маса':
-                carInfo.mass = prop.value;
+                // Разделяем массу на две части
+                const massValues = prop.value.split(' / ');
+                if (massValues.length === 2) {
+                  carInfo.mass = massValues[0];
+                  carInfo.max_mass = massValues[1];
+                } else {
+                  carInfo.mass = prop.value;
+                }
                 break;
             }
           });
