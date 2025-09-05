@@ -52,7 +52,13 @@ function formatCarInfo(data) {
   }
   
   if (data.mass) {
-    message += `⚖️ <b>Масса:</b> <code>${data.mass}</code>\n`;
+    const massValues = data.mass.split(' / ');
+    if (massValues.length === 2) {
+      message += `⚖️ <b>Масса:</b> <code>${massValues[0]}</code>\n`;
+      message += `🏋️ <b>Полная масса:</b> <code>${massValues[1]}</code>\n`;
+    } else {
+      message += `⚖️ <b>Масса:</b> <code>${data.mass}</code>\n`;
+    }
   }
   
   if (data.region) {
