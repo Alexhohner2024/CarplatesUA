@@ -13,12 +13,12 @@ export default async function handler(req, res) {
 
     console.log('Поиск информации для VIN:', vin);
 
-    // Запрос к CarPlates API
+    // Запрос к CarPlates API с Google OAuth токеном
     const response = await fetch('https://api.carplates.app/summary', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        'Authorization': process.env.AUTH_TOKEN,
+        'Authorization': process.env.GOOGLE_AUTH_TOKEN,
         'x-api-key': 'GvnAfeMKS3Xj4qGxpVqw3fBBjeu4MDMP',
         'x-locale': 'uk',
         'x-uuid': '67c4ed16-8622-41f7-bdc4-72195e3fef75',
