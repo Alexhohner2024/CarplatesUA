@@ -74,6 +74,11 @@ export default async function handler(req, res) {
         carInfo.brand = govReg.brand;
         carInfo.model = govReg.model;
         carInfo.year = govReg.make_year;
+        
+        // Извлекаем VIN из gov_registration если не был найден в основных данных
+        if (!carInfo.vin && govReg.vin) {
+          carInfo.vin = govReg.vin;
+        }
 
         // Извлекаем информацию из properties_horizontal
         if (govReg.properties_horizontal) {
