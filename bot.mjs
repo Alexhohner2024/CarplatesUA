@@ -51,12 +51,20 @@ function formatCarInfo(data) {
     message += `⛽ <b>Топливо:</b> <code>${data.fuel}</code>\n`;
   }
   
+  if (data.type) {
+    message += `🚛 <b>Тип:</b> <code>${data.type}</code>\n`;
+  }
+  
   if (data.mass) {
     message += `⚖️ <b>Масса:</b> <code>${data.mass}</code>\n`;
   }
 
   if (data.max_mass) {
-  message += `🏋️ <b>Полная масса:</b> <code>${data.max_mass}</code>\n`;
+    message += `🏋️ <b>Полная масса:</b> <code>${data.max_mass}</code>\n`;
+  }
+  
+  if (data.category) {
+    message += `📦 <b>Категория/Кузов:</b> <code>${data.category}</code>\n`;
   }
   
   if (data.region) {
@@ -65,10 +73,6 @@ function formatCarInfo(data) {
   
   if (data.settlement) {
     message += `🏙️ <b>Населенный пункт:</b> <code>${data.settlement}</code>\n`;
-  }
-  
-  if (data.registration_date) {
-    message += `📋 <b>Дата регистрации:</b> <code>${data.registration_date}</code>\n`;
   }
   
   return message;
