@@ -60,11 +60,12 @@ export default async function handler(req, res) {
       year: null,
       engine: null,
       fuel: null,
+      type: null,
       mass: null,
       max_mass: null,
+      category: null,
       region: data.region || 'Не вказано',
-      settlement: data.settlement || 'Не вказано',
-      registration_date: null
+      settlement: data.settlement || 'Не вказано'
     };
 
     // Извлекаем детали из unicards
@@ -92,6 +93,9 @@ export default async function handler(req, res) {
               case 'Об\'єм двигуна':
                 carInfo.engine = prop.value;
                 break;
+              case 'Тип':
+                carInfo.type = prop.value;
+                break;
               case 'Маса/Макс. маса':
                 // Разделяем массу на две части
                 const massValues = prop.value.split(' / ');
@@ -102,6 +106,9 @@ export default async function handler(req, res) {
                   carInfo.mass = prop.value;
                 }
                 break;
+              case 'Категорія/Кузов':
+                carInfo.category = prop.value;
+                break;
             }
           });
         }
@@ -110,11 +117,6 @@ export default async function handler(req, res) {
         if (govReg.properties) {
           const regionProp = govReg.properties.find(p => p.label === 'Регіон');
           if (regionProp) carInfo.region = regionProp.value;
-
-          const dateProp = govReg.properties.find(p => p.label === 'Дата першої реєстрації');
-          if (dateProp && dateProp.value !== '$$*#-**-*$') {
-            carInfo.registration_date = dateProp.value;
-          }
         }
       }
 
