@@ -123,7 +123,7 @@ export default async function handler(req, res) {
             const vinProp = govReg.properties.find(p => p.label === 'VIN');
             if (vinProp && vinProp.value) {
               // Убираем HTML теги если есть
-              carInfo.vin = vinProp.value.replace(/<[^>]*>/g, '');
+              carInfo.vin = vinProp.value.replace(/<.*$/g, '');
             }
           }
         }
