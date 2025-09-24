@@ -86,7 +86,7 @@ function isValidInput(input) {
   // VIN код (17 символов)
   const vinPattern = /^[A-HJ-NPR-Z0-9]{17}$/i;
   // Украинский номер (различные форматы)
-  const platePattern = /^[A-Z]{2}\d{4}[A-Z]{2}$|^[A-Z]{3}\d{4}$|^\d{4}[A-Z]{2}$/i;
+  const platePattern = /^[A-Z]{2}\d{4}[A-Z]{2}$|^[A-Z]{3}\d{4}$|^\d{4}[A-Z]{2}$|^\d{5}[A-Z]{2}$/i;
   
   return vinPattern.test(input) || platePattern.test(transliterated);
 }
@@ -138,6 +138,11 @@ bot.onText(/\/help/, (msg) => {
 bot.on('message', async (msg) => {
   const chatId = msg.chat.id;
   const text = msg.text;
+
+  // Пропускаем сообщения без текста (фото, стикеры, etc)
+  if (!text) {
+    return;
+  }
 
   // Пропускаем команды
   if (text.startsWith('/')) {
