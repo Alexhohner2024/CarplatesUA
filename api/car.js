@@ -113,10 +113,19 @@ export default async function handler(req, res) {
           });
         }
 
-        // Извлекаем регион из properties
+        // Извлекаем регион и VIN из properties
         if (govReg.properties) {
           const regionProp = govReg.properties.find(p => p.label === 'Регіон');
           if (regionProp) carInfo.region = regionProp.value;
+          
+          // Извлекаем VIN (включая частично скрытый) из properties если еще не найден
+          if (!carInfo.vin) {
+            const vinProp = govReg.properties.find(p => p.label === 'VIN');
+            if (vinProp && vinProp.value) {
+              // Убираем HTML теги если есть
+              carInfo.vin = vinProp.value.replace(/<[^>]*>/g, '');
+            }
+          }
         }
       }
 
