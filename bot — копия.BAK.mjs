@@ -144,8 +144,8 @@ bot.on('message', async (msg) => {
     return;
   }
 
-  // Защита от вызова startsWith у undefined
-  if (text && text.startsWith('/')) {
+  // Пропускаем команды
+  if (text.startsWith('/')) {
     return;
   }
 
