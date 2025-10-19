@@ -1,4 +1,5 @@
 import TelegramBot from 'node-telegram-bot-api';
+import http from 'http';
 
 const token = '7499296381:AAEL8pi2TBPQS__EomvcvmtBwgpsgKRiYN8';
 const bot = new TelegramBot(token, { polling: true });
@@ -160,3 +161,13 @@ ${data.message || 'Возможные причины:'}
 });
 
 console.log('Bot started...');
+
+// Minimal HTTP server to keep Fly.io machine active and pass health checks
+const healthPort = process.env.PORT ? Number(process.env.PORT) : 8080;
+const server = http.createServer((req, res) => {
+  res.writeHead(200, { 'Content-Type': 'text/plain' });
+  res.end('OK');
+});
+server.listen(healthPort, () => {
+  console.log(`Health server listening on port ${healthPort}`);
+});
