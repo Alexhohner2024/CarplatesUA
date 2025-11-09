@@ -1,9 +1,9 @@
 import TelegramBot from 'node-telegram-bot-api';
 import http from 'http';
+import { getCarInfo } from './services/car-service.js';
 
 const token = '7499296381:AAEL8pi2TBPQS__EomvcvmtBwgpsgKRiYN8';
 const bot = new TelegramBot(token, { polling: true });
-const API_URL = 'https://carplates-ua.vercel.app/api/car';
 
 function transliterateUkrainianPlate(text) {
   const translitMap = {
@@ -113,16 +113,8 @@ bot.on('message', async (msg) => {
   try {
     const requestText = transliterateUkrainianPlate(text.toUpperCase());
 
-    const response = await fetch(API_URL, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'Cookie': 'SID=g.a0002Ah0M1_eEngpcqhYUKr5IdeYHAc6FM4TJB71L5DIvPuwtm2znV4o81CqWsd2t88QJa1vDgACgYKARsSARESFQHGX2Mia7ghZS73qWho9mFOps23WBoVAUF8yKrA49JHTythre6aTh-GBRpm0076; SIDCC=AKEyXzUzw0TCBtjyOwlTiUPY2v3UOdScE8gfMV4nA1B_8inEQuwr2QdrAdLhxi1pUfq2PxwkiA; SSID=ALM7ZkKsdm0xPWi9b; _Secure-1PAPISID=bYoSfHGCqAkyJwVD9rpGMq-UGt355a-PDLKOYoPwl8yWOcBDA7NS3Yx6mlu43Ej4Ya6HueKGmL3xTb5czqZLxjFcS-8804NmwcPycLGv-49DZuL09YEM-Kd4jwSGnSUFnF8StP1aRY6Uf7ULTj8stXxgq3m2dlpWgcskAn5AxLHmrBDb5MnkRElyRculIJ6I_Y8-SrzrHSTz6YQqb2zop4Svnh4GzZFKWsFr_SeuPAWST0sw7iaXtv5NbKGDGPZCm5osGultyoYLMTHfdH_6WUcka9SUf54rsJpjPZoFQqLfuJGc6nrx99_FzC1ARSNUuIDU0oA9iqRJk_9rD4HfHsF8Nmjoj2-Cm8LAWUp2G7DXRw; _Secure-1PSSIDCC=AKEyXzXzPdrsdK2UtGHJL74cMrJ19tcnGsSquNb3z-bnkOAyqFzNIwSpEZdPOzgrR5HBN33yIHJ5g4qiZb32hStU7kZIJE8GkXqbSloHmN3Knk9zmQuvUg7ISBGuPiHSzxqjxZSoI3QUdu2hsYWAR_0s0VcTmVHsQkAKxDvVMr7BTgc_Lc1YATD9eoDi04KcU; _Secure-3PAPISID=bYoSfHGCqAkyJwVD9rpGMq-UGt355a-PDLKOYoPwl8yWOcBDA7NS3Yx6mlu43Ej4Ya6HueKGmL3xTb5czqZLxjFcS-8804NmwcPycLGv-49DZuL09YEM-Kd4jwSGnSUFnF8StP1aRY6Uf7ULTj8stXxgq3m2dlpWgcskAn5AxLHmrBDb5MnkRElyRculIJ6I_Y8-SrzrHSTz6YQqb2zop4Svnh4GzZFKWsFr_SeuPAWST0sw7iaXtv5NbKGDGPZCm5osGultyoYLMTHfdH_6WUcka9SUf54rsJpjPZoFQqLfuJGc6nrx99_FzC1ARSNUuIDU0oA9iqRJk_9rD4HfHsF8Nmjoj2-Cm8LAWUp2G7DXRw; _Secure-3PSIDCC=AKEyXzXzPdrsdK2UtGHJL74cMrJ19tcnGsSquNb3z-bnkOAyqFzNIwSpEZdPOzgrR5HBN33yIHJ5g4qiZb32hStU7kZIJE8GkXqbSloHmN3Knk9zmQuvUg7ISBGuPiHSzxqjxZSoI3QUdu2hsYWAR_0s0VcTmVHsQkAKxDvVMr7BTgc_Lc1YATD9eoDi04KcU; _Secure-3PSID=bYoSfHGCqAkyJwVD9rpGMq-UGt355a-PDLKOYoPwl8yWOcBDA7NS3Yx6mlu43Ej4Ya6HueKGmL3xTb5czqZLxjFcS-8804NmwcPycLGv-49DZuL09YEM-Kd4jwSGnSUFnF8StP1aRY6Uf7ULTj8stXxgq3m2dlpWgcskAn5AxLHmrBDb5MnkRElyRculIJ6I_Y8-SrzrHSTz6YQqb2zop4Svnh4GzZFKWsFr_SeuPAWST0sw7iaXtv5NbKGDGPZCm5osGultyoYLMTHfdH_6WUcka9SUf54rsJpjPZoFQqLfuJGc6nrx99_FzC1ARSNUuIDU0oA9iqRJk_9rD4HfHsF8Nmjoj2-Cm8LAWUp2G7DXRw; _Secure-ENID=28.SE~S4q201G..; AEC=AaJma5uLTk6w..; APISID=0s4Bw4CJWWF..; HSID=A25SnyHmm0Pt..; NID=525~Am6pX0n..; SAPISID=bYoSfHGCqAkyJwVD9rpGMq-UGt355a-PDLK; SEARCH_SAMESITE=CgQIk658; SID=g.a0002Ah0M1_eEngpcqhYUKr5IdeYHAc6FM4TJB71L5DIvPuwtm2znV4o81CqWsd2t88QJa1vDgACgYKARsSARESFQHGX2Mia7ghZS73qWho9mFOps23WBoVAUF8yKrA49JHTythre6aTh-GBRpm0076'
-    },
-    body: JSON.stringify({ vin: requestText })
-  });
-
-  const data = await response.json();
+    // Используем новый сервис который получает VIN с unda.com.ua
+    const data = await getCarInfo(requestText);
 
   bot.deleteMessage(chatId, searchMessage.message_id);
 

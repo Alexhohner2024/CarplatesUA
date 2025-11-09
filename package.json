@@ -9,6 +9,7 @@
     "get-token": "node scripts/get-token.js"
   },
   "dependencies": {
+    "@puppeteer/browsers": "^2.10.13",
     "node-telegram-bot-api": "^0.66.0",
     "puppeteer": "^21.0.0"
   },
