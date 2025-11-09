@@ -54,17 +54,21 @@ export async function scrapeUndaVin(plateNumber) {
     // Try to find the input field for car plate
     // Common selectors that might work
     const possibleInputSelectors = [
+      'input[name="n_reg_new"]',  // Exact match for unda.com.ua
+      'input[type="search"]',     // Search type input
       'input[type="text"]',
       'input[name*="number"]',
       'input[name*="nomer"]',
       'input[name*="номер"]',
       'input[placeholder*="номер"]',
       'input[placeholder*="number"]',
+      'input[placeholder*="ГОСНОМЕР"]',
       '#carNumber',
       '#plateNumber',
       '#search',
       '.search-input',
-      'form input[type="text"]'
+      'form input[type="text"]',
+      'form input[type="search"]'
     ];
 
     let inputField = null;
