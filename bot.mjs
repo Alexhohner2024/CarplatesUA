@@ -22,7 +22,7 @@ function formatCarInfo(data) {
   if (data.plate) message += `🚘 <b>Номер:</b> <code>${data.plate}</code>\n`;
   if (data.vin) message += `🔢 <b>VIN:</b> <code>${data.vin}</code>\n`;
   if (data.color) message += `🎨 <b>Цвет:</b> <code>${data.color}</code>\n`;
-  if (data.engine) message += `⚙️ <b>Двигатель:</b> <code>${data.engine}</code>\n`;
+  if (data.engine) message += `⚙️ <b>Двигатель,см3:</b> <code>${data.engine}</code>\n`;
   if (data.fuel) message += `⛽ <b>Топливо:</b> <code>${data.fuel}</code>\n`;
   if (data.type) message += `🚛 <b>Тип:</b> <code>${data.type}</code>\n`;
   if (data.mass) message += `⚖️ <b>Масса:</b> <code>${data.mass}</code>\n`;
