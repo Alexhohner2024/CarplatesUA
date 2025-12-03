@@ -49,6 +49,7 @@ class BrowserPool {
     const browser = await puppeteer.launch({
       headless: 'new',
       executablePath: process.env.PUPPETEER_EXECUTABLE_PATH || '/usr/bin/chromium',
+      protocolTimeout: 120000, // 2 минуты для протокола DevTools (увеличено с дефолтных 180000)
       args: [
         '--no-sandbox',
         '--disable-setuid-sandbox',
@@ -89,12 +90,32 @@ class BrowserPool {
   }
 
   /**
-   * Создать новую страницу
+   * Создать новую страницу с обработкой ошибок
    * @returns {Promise<puppeteer.Page>}
    */
   async newPage() {
-    const browser = await this.getBrowser();
-    return await browser.newPage();
+    try {
+      const browser = await this.getBrowser();
+      const page = await browser.newPage();
+      
+      // Устанавливаем таймауты для страницы
+      page.setDefaultNavigationTimeout(20000); // 20 секунд
+      page.setDefaultTimeout(15000); // 15 секунд
+      
+      return page;
+    } catch (error) {
+      // Если ошибка связана с протоколом, пересоздаем браузер
+      if (error.message && error.message.includes('timed out')) {
+        console.error('[BrowserPool] Protocol timeout, recreating browser...');
+        this.browser = null;
+        const browser = await this.getBrowser();
+        const page = await browser.newPage();
+        page.setDefaultNavigationTimeout(20000);
+        page.setDefaultTimeout(15000);
+        return page;
+      }
+      throw error;
+    }
   }
 
   /**
@@ -112,6 +133,17 @@ class BrowserPool {
     }
     this.isInitializing = false;
     this.initPromise = null;
+  }
+
+  /**
+   * Принудительно пересоздать браузер (для обработки ошибок)
+   */
+  async forceRecreate() {
+    console.log('[BrowserPool] Force recreating browser...');
+    await this.close();
+    // Небольшая задержка перед пересозданием
+    await new Promise(resolve => setTimeout(resolve, 1000));
+    return await this.getBrowser();
   }
 
   /**

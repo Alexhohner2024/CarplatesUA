@@ -6,11 +6,34 @@ import browserPool from '../services/browser-pool.js';
  * @param {string} plateNumber - Ukrainian license plate (e.g., "AA1234BB")
  * @returns {Promise<Object>} - Object containing VIN code and other info
  */
-export async function scrapeUndaVin(plateNumber) {
-  console.log(`[Unda] Starting scrape for plate: ${plateNumber}`);
+export async function scrapeUndaVin(plateNumber, retryCount = 0) {
+  const maxRetries = 2;
+  console.log(`[Unda] Starting scrape for plate: ${plateNumber} (attempt ${retryCount + 1}/${maxRetries + 1})`);
 
-  // Используем переиспользуемый браузер из pool
-  const page = await browserPool.newPage();
+  let page = null;
+  
+  try {
+    // Используем переиспользуемый браузер из pool
+    page = await browserPool.newPage();
+  } catch (error) {
+    console.error('[Unda] Error creating page:', error.message);
+    
+    // Если ошибка протокола и есть попытки, пересоздаем браузер и повторяем
+    if (error.message && error.message.includes('timed out') && retryCount < maxRetries) {
+      console.log('[Unda] Protocol timeout, forcing browser recreation and retrying...');
+      // Принудительно пересоздаем браузер
+      await browserPool.forceRecreate();
+      // Небольшая задержка перед повторной попыткой
+      await new Promise(resolve => setTimeout(resolve, 2000));
+      return await scrapeUndaVin(plateNumber, retryCount + 1);
+    }
+    
+    return {
+      success: false,
+      error: `Failed to create browser page: ${error.message}`,
+      message: 'Не удалось инициализировать браузер. Попробуйте позже.'
+    };
+  }
 
   try {
     // Set optimized viewport (меньший размер для экономии памяти)
@@ -257,18 +280,50 @@ export async function scrapeUndaVin(plateNumber) {
     };
   } catch (error) {
     console.error('[Unda] Error during scraping:', error);
+    
+    // Если ошибка протокола и есть попытки, пересоздаем браузер и повторяем
+    if (error.message && (
+      error.message.includes('timed out') || 
+      error.message.includes('Network.enable') ||
+      error.message.includes('Protocol error')
+    ) && retryCount < maxRetries) {
+      console.log('[Unda] Protocol error detected, forcing browser recreation and retrying...');
+      
+      // Закрываем страницу если она существует
+      if (page) {
+        try {
+          await page.close();
+        } catch (e) {
+          console.error('[Unda] Error closing page before retry:', e);
+        }
+      }
+      
+      // Принудительно пересоздаем браузер
+      await browserPool.forceRecreate();
+      
+      // Небольшая задержка перед повторной попыткой
+      await new Promise(resolve => setTimeout(resolve, 2000));
+      
+      return await scrapeUndaVin(plateNumber, retryCount + 1);
+    }
+    
     return {
       success: false,
       error: error.message,
+      message: error.message.includes('timed out') 
+        ? 'Превышено время ожидания ответа от сервера. Попробуйте позже.'
+        : 'Произошла ошибка при получении данных. Попробуйте позже.',
       stack: error.stack
     };
   } finally {
     // Закрываем только страницу, браузер остается открытым для переиспользования
-    try {
-      await page.close();
-      console.log('[Unda] Page closed, browser remains active for reuse');
-    } catch (error) {
-      console.error('[Unda] Error closing page:', error);
+    if (page) {
+      try {
+        await page.close();
+        console.log('[Unda] Page closed, browser remains active for reuse');
+      } catch (error) {
+        console.error('[Unda] Error closing page:', error);
+      }
     }
   }
 }
