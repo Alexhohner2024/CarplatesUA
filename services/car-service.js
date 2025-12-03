@@ -14,21 +14,26 @@ export async function getCarInfo(input) {
     const isVin = vinPattern.test(input);
     const plateNumber = isVin ? null : input;
 
-    // Если это номер, получаем VIN с unda.com.ua
+    // ВРЕМЕННО ОТКЛЮЧЕНО: Поиск VIN через unda.com.ua
+    // Раскомментируйте код ниже для включения поиска VIN через unda.com.ua
     let actualVin = isVin ? input : null;
-    let undaResult = null;
+    // let undaResult = null;
+
+    // if (plateNumber) {
+    //   console.log('[CarService] Getting VIN from unda.com.ua for plate:', plateNumber);
+    //   undaResult = await scrapeUndaVin(plateNumber);
+
+    //   if (undaResult.success && undaResult.vin) {
+    //     actualVin = undaResult.vin;
+    //     console.log('[CarService] ✅ VIN retrieved from unda.com.ua:', actualVin);
+    //   } else {
+    //     console.log('[CarService] ⚠️ Failed to get VIN from unda.com.ua:', undaResult.error);
+    //     // Продолжаем с номером, возможно CarPlates API найдет
+    //   }
+    // }
 
     if (plateNumber) {
-      console.log('[CarService] Getting VIN from unda.com.ua for plate:', plateNumber);
-      undaResult = await scrapeUndaVin(plateNumber);
-
-      if (undaResult.success && undaResult.vin) {
-        actualVin = undaResult.vin;
-        console.log('[CarService] ✅ VIN retrieved from unda.com.ua:', actualVin);
-      } else {
-        console.log('[CarService] ⚠️ Failed to get VIN from unda.com.ua:', undaResult.error);
-        // Продолжаем с номером, возможно CarPlates API найдет
-      }
+      console.log('[CarService] ⚠️ VIN search via unda.com.ua is temporarily disabled. Using plate number directly.');
     }
 
     // Теперь получаем остальные данные с CarPlates API
@@ -51,16 +56,16 @@ export async function getCarInfo(input) {
     if (!response.ok) {
       console.error('[CarService] CarPlates API error:', response.status);
 
-      // Если у нас есть VIN с unda.com.ua, вернем хотя бы его
-      if (actualVin) {
-        return {
-          success: true,
-          vin: actualVin,
-          plate: plateNumber,
-          vinSource: 'unda.com.ua',
-          message: 'VIN получен с unda.com.ua, но дополнительные данные недоступны'
-        };
-      }
+      // ВРЕМЕННО ОТКЛЮЧЕНО: Проверка VIN с unda.com.ua
+      // if (actualVin) {
+      //   return {
+      //     success: true,
+      //     vin: actualVin,
+      //     plate: plateNumber,
+      //     vinSource: 'unda.com.ua',
+      //     message: 'VIN получен с unda.com.ua, но дополнительные данные недоступны'
+      //   };
+      // }
 
       return {
         success: false,
@@ -72,16 +77,16 @@ export async function getCarInfo(input) {
     console.log('[CarService] CarPlates API response received');
 
     if (data.error) {
-      // Если CarPlates не нашел, но у нас есть VIN с unda
-      if (actualVin) {
-        return {
-          success: true,
-          vin: actualVin,
-          plate: plateNumber,
-          vinSource: 'unda.com.ua',
-          message: 'VIN получен с unda.com.ua'
-        };
-      }
+      // ВРЕМЕННО ОТКЛЮЧЕНО: Проверка VIN с unda.com.ua
+      // if (actualVin) {
+      //   return {
+      //     success: true,
+      //     vin: actualVin,
+      //     plate: plateNumber,
+      //     vinSource: 'unda.com.ua',
+      //     message: 'VIN получен с unda.com.ua'
+      //   };
+      // }
 
       return {
         success: false,
@@ -94,8 +99,8 @@ export async function getCarInfo(input) {
       success: true,
       plate: data.plate || plateNumber,
       plate_en: data.plate_en,
-      vin: actualVin || data.vin, // Используем VIN с unda.com.ua если есть
-      vinSource: actualVin ? 'unda.com.ua' : 'carplates.app',
+      vin: actualVin || data.vin, // ВРЕМЕННО: VIN только из CarPlates API (unda отключен)
+      vinSource: 'carplates.app', // ВРЕМЕННО: unda отключен
       color: data.color,
       brand: null,
       model: null,
