@@ -15,6 +15,19 @@ export async function scrapeUndaVin(plateNumber) {
   try {
     // Set optimized viewport (меньший размер для экономии памяти)
     await page.setViewport({ width: 800, height: 600 });
+    
+    // Отключаем загрузку изображений и других ресурсов для ускорения
+    await page.setRequestInterception(true);
+    page.on('request', (req) => {
+      const resourceType = req.resourceType();
+      // Блокируем изображения, стили, шрифты, медиа - оставляем только HTML и скрипты
+      if (['image', 'stylesheet', 'font', 'media'].includes(resourceType)) {
+        req.abort();
+      } else {
+        req.continue();
+      }
+    });
+    
     await page.setUserAgent(
       'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36'
     );
@@ -27,18 +40,15 @@ export async function scrapeUndaVin(plateNumber) {
 
     console.log('[Unda] Navigating to unda.com.ua...');
 
-    // Navigate to the page
+    // Navigate to the page with faster loading strategy
     await page.goto('http://www.unda.com.ua/proverka-gosnomer-UA/', {
-      waitUntil: 'networkidle2',
-      timeout: 30000
+      waitUntil: 'domcontentloaded', // Быстрее чем networkidle2
+      timeout: 15000 // Уменьшен с 30 до 15 секунд
     });
 
     console.log('[Unda] Page loaded, looking for input field...');
 
-    // Wait for page to be fully loaded
-    await page.waitForTimeout(2000);
-
-    // Try to find the input field for car plate
+    // Try to find the input field for car plate (с таймаутом для ожидания)
     // Common selectors that might work
     const possibleInputSelectors = [
       'input[name="n_reg_new"]',  // Exact match for unda.com.ua
@@ -61,9 +71,11 @@ export async function scrapeUndaVin(plateNumber) {
     let inputField = null;
     let inputSelector = null;
 
+    // Пытаемся найти поле ввода с таймаутом
     for (const selector of possibleInputSelectors) {
       try {
-        inputField = await page.$(selector);
+        // Используем waitForSelector с коротким таймаутом вместо простого $
+        inputField = await page.waitForSelector(selector, { timeout: 1000 }).catch(() => null);
         if (inputField) {
           inputSelector = selector;
           console.log(`[Unda] Found input field with selector: ${selector}`);
@@ -97,12 +109,12 @@ export async function scrapeUndaVin(plateNumber) {
       throw new Error('Could not find input field for plate number');
     }
 
-    // Type the plate number
+    // Type the plate number (быстрее, без задержки)
     console.log(`[Unda] Typing plate number: ${plateNumber}`);
-    await page.type(inputSelector, plateNumber, { delay: 100 });
+    await page.type(inputSelector, plateNumber, { delay: 0 }); // Убрана задержка
 
-    // Wait a bit after typing
-    await page.waitForTimeout(500);
+    // Минимальное ожидание после ввода
+    await page.waitForTimeout(200); // Уменьшено с 500 до 200мс
 
     // Find and click the submit button
     const possibleButtonSelectors = [
@@ -118,7 +130,8 @@ export async function scrapeUndaVin(plateNumber) {
     let submitButton = null;
     for (const selector of possibleButtonSelectors) {
       try {
-        submitButton = await page.$(selector);
+        // Используем waitForSelector с коротким таймаутом
+        submitButton = await page.waitForSelector(selector, { timeout: 500 }).catch(() => null);
         if (submitButton) {
           console.log(`[Unda] Found submit button: ${selector}`);
           break;
@@ -140,16 +153,16 @@ export async function scrapeUndaVin(plateNumber) {
     // Wait for results to load
     console.log('[Unda] Waiting for results...');
 
-    // Wait for navigation or dynamic content
+    // Wait for navigation or dynamic content with faster strategy
     try {
       await page.waitForNavigation({
-        waitUntil: 'networkidle2',
-        timeout: 10000
+        waitUntil: 'domcontentloaded', // Быстрее чем networkidle2
+        timeout: 8000 // Уменьшен с 10 до 8 секунд
       });
     } catch (e) {
       // Navigation might not happen, content might load dynamically
       console.log('[Unda] No navigation, waiting for dynamic content...');
-      await page.waitForTimeout(3000);
+      await page.waitForTimeout(1500); // Уменьшено с 3000 до 1500мс
     }
 
     // Extract VIN and other information from the page
