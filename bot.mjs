@@ -1,6 +1,7 @@
 import TelegramBot from 'node-telegram-bot-api';
 import http from 'http';
 import { getCarInfo } from './services/car-service.js';
+import browserPool from './services/browser-pool.js';
 
 const token = '7499296381:AAEL8pi2TBPQS__EomvcvmtBwgpsgKRiYN8';
 const bot = new TelegramBot(token, { polling: true });
@@ -151,6 +152,40 @@ ${data.message || 'Возможные причины:'}
   `, { parse_mode: 'HTML' });
 }
 });
+
+// Функция для логирования использования памяти
+function logMemoryUsage() {
+  const used = process.memoryUsage();
+  const formatMB = (bytes) => Math.round(bytes / 1024 / 1024 * 100) / 100;
+  console.log(`[Memory] Heap Used: ${formatMB(used.heapUsed)}MB / ${formatMB(used.heapTotal)}MB | RSS: ${formatMB(used.rss)}MB`);
+}
+
+// Логируем использование памяти при старте
+logMemoryUsage();
+
+// Graceful shutdown - закрываем браузер при остановке
+async function gracefulShutdown(signal) {
+  console.log(`\n[Shutdown] ${signal} received, closing browser pool...`);
+  try {
+    await browserPool.close();
+    logMemoryUsage();
+    console.log('[Shutdown] Browser pool closed, exiting...');
+    process.exit(0);
+  } catch (error) {
+    console.error('[Shutdown] Error during shutdown:', error);
+    process.exit(1);
+  }
+}
+
+process.on('SIGINT', () => gracefulShutdown('SIGINT'));
+process.on('SIGTERM', () => gracefulShutdown('SIGTERM'));
+
+// Логируем использование памяти каждые 5 минут (опционально, для мониторинга)
+if (process.env.LOG_MEMORY === 'true') {
+  setInterval(() => {
+    logMemoryUsage();
+  }, 5 * 60 * 1000); // 5 минут
+}
 
 console.log('Bot started...');
 

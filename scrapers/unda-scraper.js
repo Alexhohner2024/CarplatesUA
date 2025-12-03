@@ -1,33 +1,20 @@
-import puppeteer from 'puppeteer';
+import browserPool from '../services/browser-pool.js';
 
 /**
  * Scrapes VIN code from unda.com.ua by license plate number
+ * Использует переиспользуемый браузер из browser pool для экономии памяти
  * @param {string} plateNumber - Ukrainian license plate (e.g., "AA1234BB")
  * @returns {Promise<Object>} - Object containing VIN code and other info
  */
 export async function scrapeUndaVin(plateNumber) {
   console.log(`[Unda] Starting scrape for plate: ${plateNumber}`);
 
-  const browser = await puppeteer.launch({
-    headless: 'new',
-    executablePath: process.env.PUPPETEER_EXECUTABLE_PATH || '/usr/bin/chromium',
-    args: [
-      '--no-sandbox',
-      '--disable-setuid-sandbox',
-      '--disable-dev-shm-usage',
-      '--disable-accelerated-2d-canvas',
-      '--disable-gpu',
-      '--disable-software-rasterizer',
-      '--disable-extensions',
-      '--window-size=1920,1080'
-    ]
-  });
+  // Используем переиспользуемый браузер из pool
+  const page = await browserPool.newPage();
 
   try {
-    const page = await browser.newPage();
-
-    // Set realistic viewport and user agent
-    await page.setViewport({ width: 1920, height: 1080 });
+    // Set optimized viewport (меньший размер для экономии памяти)
+    await page.setViewport({ width: 800, height: 600 });
     await page.setUserAgent(
       'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36'
     );
@@ -255,7 +242,6 @@ export async function scrapeUndaVin(plateNumber) {
       source: 'unda.com.ua',
       extractedData: extractedData // Include for debugging
     };
-
   } catch (error) {
     console.error('[Unda] Error during scraping:', error);
     return {
@@ -264,8 +250,13 @@ export async function scrapeUndaVin(plateNumber) {
       stack: error.stack
     };
   } finally {
-    await browser.close();
-    console.log('[Unda] Browser closed');
+    // Закрываем только страницу, браузер остается открытым для переиспользования
+    try {
+      await page.close();
+      console.log('[Unda] Page closed, browser remains active for reuse');
+    } catch (error) {
+      console.error('[Unda] Error closing page:', error);
+    }
   }
 }
 
